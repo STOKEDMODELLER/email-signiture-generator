@@ -31,8 +31,8 @@ def vcard(data,dirToQR):
                             url='www.mbb.co.za'
                             )
     qr.designator
-    qr.save('{}.svg'.format(dirToQR+data['email']), scale=15)
-    qr.save('{}.png'.format(dirToQR+data['email']), scale=15)
+    qr.save('{}.svg'.format(dirToQR+data['email']), scale=4)
+    qr.save('{}.png'.format(dirToQR+data['email']), scale=4)
 
 def generate_signiture(data,dirToQR,signitures):
     encoded = base64.b64encode(open(dirToQR+data['email']+'.png', "rb").read())
@@ -73,7 +73,7 @@ def generator(data1,data,dir_name,dir_name_png):
               file.write(filedata)
     
     else:
-        open('{}.svg'.format(dir_name), 'a').write(open('Template_R01.svg', 'r').read())
+        open('{}.svg'.format(dir_name), 'a').write(open('Template_R02.svg', 'r').read())
         for i,c in enumerate(data1):
             # Read in the file
             with open('{}.svg'.format(dir_name), 'r') as file :
@@ -90,7 +90,11 @@ def png_maker(dir_name,dir_name_png):
         os.remove('{}.png'.format(dir_name_png))
         svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(),write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
     else:
-        svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
+        try:
+            svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
+
+        except:
+            svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='ISO-8859-1').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
 
 # Print iterations progress
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
@@ -115,7 +119,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         print()
 
         
-d = pd.read_csv('MBB_Services_International-Senders.csv').fillna('-')
+d = pd.read_csv('MBB_Services_International-Senders.csv', encoding = "ISO-8859-1").fillna('')
 
 
 printProgressBar(0, d.shape[0], prefix = 'Progress:', suffix = 'Complete', length = 50)
