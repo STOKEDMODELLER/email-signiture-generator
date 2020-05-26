@@ -27,11 +27,12 @@ def vcard(data,dirToQR):
                             fax = data['fax'],
                             title =data['qualification'],
                             street=data['Address'],
+                            pobox=data['Postal'],
                             url='www.mbb.co.za'
                             )
     qr.designator
-    qr.save('{}.svg'.format(dirToQR+data['email']), scale=4)
-    qr.save('{}.png'.format(dirToQR+data['email']), scale=4)
+    qr.save('{}.svg'.format(dirToQR+data['email']), scale=15)
+    qr.save('{}.png'.format(dirToQR+data['email']), scale=15)
 
 def generate_signiture(data,dirToQR,signitures):
     encoded = base64.b64encode(open(dirToQR+data['email']+'.png', "rb").read())
@@ -87,13 +88,37 @@ def generator(data1,data,dir_name,dir_name_png):
 def png_maker(dir_name,dir_name_png):
     if os.path.isfile('{}.png'.format(dir_name_png)):
         os.remove('{}.png'.format(dir_name_png))
-        print("{}.svg".format(dir_name),'{}.png'.format(dir_name_png))
-        svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(),write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=92)
+        svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(),write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
     else:
-        print("{}.svg".format(dir_name),'{}.png'.format(dir_name_png))
-        svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=92)
+        svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
+
+# Print iterations progress
+def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iteration   - Required  : current iteration (Int)
+        total       - Required  : total iterations (Int)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        length      - Optional  : character length of bar (Int)
+        fill        - Optional  : bar fill character (Str)
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    """
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+    filledLength = int(length * iteration // total)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print('\r%s |%s| %s%% %s' % (prefix, bar, percent, suffix), end = printEnd)
+    # Print New Line on Complete
+    if iteration == total: 
+        print()
+
         
 d = pd.read_csv('MBB_Services_International-Senders.csv').fillna('-')
+
+
+printProgressBar(0, d.shape[0], prefix = 'Progress:', suffix = 'Complete', length = 50)
 
 for i in range(d.shape[0]):
     branch = d.iloc[i]['branch']
@@ -107,6 +132,7 @@ for i in range(d.shape[0]):
     qualification = d.iloc[i]['qualification']
     organisation = d.iloc[i]['organisation']
     addr = d.iloc[i]['Address']
+    pobox = d.iloc[i]['Postal']
     
     data1= {'branch':branch,
            'email':email,
@@ -118,7 +144,8 @@ for i in range(d.shape[0]):
            'fax':fax,
            'qualification':qualification,
            'organisation':organisation,
-           'Address':addr
+           'Address':addr,
+           'Postal':pobox
         }
     vcard(data1,dirToQR)
     data = d.iloc[i]
@@ -140,8 +167,5 @@ for i in range(d.shape[0]):
     data1 = ['email','cell','tel11','title1','full_name','qualll','branch','fax','filename_image','addr']
     generator(data1,data,dir_name,dir_name_png)
     png_maker(dir_name,dir_name_png)
-    print(str(np.round(i*100/d.shape[0]))+'%')
-
-    
-    
-   
+    # print(str(np.round(i*100/d.shape[0]))+'%')
+    printProgressBar(i + 1, d.shape[0], prefix = 'Progress:', suffix = 'Complete', length = 50)

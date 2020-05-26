@@ -6,5 +6,5 @@ save_non_project_files = False
 
 [main]
 version = '0.2.0'
-recent_files = ['QR_generator.py', 'QR_generator_1.py', 'signitures\\gst@mbb.co.za.svg']
+recent_files = ['QR_generator.py']
 
