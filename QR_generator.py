@@ -60,7 +60,7 @@ def generator(data1,data,dir_name,dir_name_png):
     
     if os.path.isfile('{}.svg'.format(dir_name)):
         os.remove('{}.svg'.format(dir_name))
-        open('{}.svg'.format(dir_name), 'a').write(open('Template_R01.svg', 'r').read())
+        open('{}.svg'.format(dir_name), 'a').write(open('Template_R03.svg', 'r').read())
         for i,c in enumerate(data1):
             # Read in the file
             with open('{}.svg'.format(dir_name), 'r') as file :
@@ -73,7 +73,7 @@ def generator(data1,data,dir_name,dir_name_png):
               file.write(filedata)
     
     else:
-        open('{}.svg'.format(dir_name), 'a').write(open('Template_R02.svg', 'r').read())
+        open('{}.svg'.format(dir_name), 'a').write(open('Template_R03.svg', 'r').read())
         for i,c in enumerate(data1):
             # Read in the file
             with open('{}.svg'.format(dir_name), 'r') as file :
@@ -88,7 +88,11 @@ def generator(data1,data,dir_name,dir_name_png):
 def png_maker(dir_name,dir_name_png):
     if os.path.isfile('{}.png'.format(dir_name_png)):
         os.remove('{}.png'.format(dir_name_png))
-        svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(),write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
+        try:
+            svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
+
+        except:
+            svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='ISO-8859-1').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
     else:
         try:
             svg2png(bytestring=open("{}.svg".format(dir_name),"r", encoding='utf8').read(), write_to=open('{}.png'.format(dir_name_png),'wb'),dpi=1080)
